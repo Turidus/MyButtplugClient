@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "webSocketServer.ip",
+      "type": "java.lang.String",
+      "description": "The server IP."
+    },
+    {
+      "name": "webSocketServer.port",
+      "type": "java.lang.Integer",
+      "description": "The server Port."
+    },
+    {
+      "name": "messageVersion",
+      "type": "java.lang.Integer",
+      "description": "Message template version of the client software."
+    }
+  ] }
