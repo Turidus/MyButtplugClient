@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.HBox?>
+
+<TitledPane fx:id="devicePane" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="152.0" prefHeight="430.0" text="DeviceName" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.turidus.buttpluggui.deviceControllers.DeviceController">
+   <content>
+      <HBox fx:id="hBox" minHeight="400.0" />
+   </content>
+</TitledPane>

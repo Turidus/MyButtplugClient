@@ -18,8 +18,10 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     @Override
     public void onApplicationEvent(StageReadyEvent stageReadyEvent) {
         Stage stage = stageReadyEvent.getStage();
-        scene = new Scene(loadFXML("de/turidus/buttpluggui/mainView"), 1200, 675);
+        scene = new Scene(loadFXML("de/turidus/buttpluggui/mainView"), 150, 500);
         stage.setScene(scene);
+        stage.setMinHeight(scene.getHeight());
+        stage.setMinWidth(scene.getWidth());
         stage.show();
     }
 

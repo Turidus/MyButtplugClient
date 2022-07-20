@@ -2,9 +2,13 @@ package de.turidus.buttplugManager.deviceManager
 
 import de.turidus.buttplugClient.devices.DeviceData
 import de.turidus.buttplugClient.events.SendListOfMessagesEvent
+import de.turidus.buttplugClient.messages.enumerationMessages.DeviceAdded
+import de.turidus.buttplugClient.messages.enumerationMessages.DeviceRemoved
 import de.turidus.buttplugManager.EventBusListener
 import de.turidus.buttplugManager.enums.MotorType
 import de.turidus.buttplugManager.events.ClockEvent
+import de.turidus.buttplugManager.events.DeviceAddedEvent
+import de.turidus.buttplugManager.events.DeviceRemovedEvent
 import org.greenrobot.eventbus.EventBus
 import spock.lang.Shared
 import spock.lang.Specification
@@ -68,21 +72,23 @@ class DeviceManagerTest extends Specification {
         device.mapOfLinearMotors.isEmpty()
     }
 
-    def "Adding a device to the device manager"() {
+    def "Adding a device to the device manager, this send a DeviceAddedEvent."() {
         expect:
         deviceManager.mapOfDevices.size() == 0
         when:
         deviceManager.addDevice(deviceData)
         then:
         deviceManager.mapOfDevices.size() == 1
+        eventBusListener.classOfLastEvent == DeviceAddedEvent.class
     }
 
-    def "Remove a device from the device manager"() {
+    def "Remove a device from the device manager, this send a DeviceRemovedEvent."() {
         deviceManager.addDevice(deviceData)
         when:
         deviceManager.removeDevice(deviceData.DeviceIndex)
         then:
         deviceManager.mapOfDevices.size() == 0
+        eventBusListener.classOfLastEvent == DeviceRemovedEvent.class
     }
 
     def "Set all vibration motors on a devices to a target step"() {

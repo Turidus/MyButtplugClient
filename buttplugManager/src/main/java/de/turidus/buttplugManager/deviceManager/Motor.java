@@ -31,7 +31,8 @@ public abstract class Motor {
         }
         targetStep = nextTargetStep;
     }
-
+    public int getMotorIndex(){ return motorIndex;
+    }
     public int getStepCount() {
         return stepCount;
     }

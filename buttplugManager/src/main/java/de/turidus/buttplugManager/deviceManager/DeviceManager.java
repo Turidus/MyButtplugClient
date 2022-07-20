@@ -1,10 +1,14 @@
 package de.turidus.buttplugManager.deviceManager;
 
 import de.turidus.buttplugClient.devices.DeviceData;
+import de.turidus.buttplugClient.enums.MessageType;
 import de.turidus.buttplugClient.events.SendListOfMessagesEvent;
 import de.turidus.buttplugClient.messages.AbstractMessage;
 import de.turidus.buttplugManager.enums.MotorType;
 import de.turidus.buttplugManager.events.ClockEvent;
+import de.turidus.buttplugManager.events.DeviceAddedEvent;
+import de.turidus.buttplugManager.events.DeviceRemovedEvent;
+import de.turidus.buttplugManager.events.SimpleMessageRequest;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +41,9 @@ public class DeviceManager {
     }
 
     public void addDevice(DeviceData deviceData) {
-        mapOfDevices.put(deviceData.DeviceIndex, new Device(deviceData));
+        Device device = new Device(deviceData);
+        mapOfDevices.put(deviceData.DeviceIndex, device);
+        eventBus.post(new DeviceAddedEvent(device));
     }
 
     public void addDevices(List<DeviceData> deviceDataList) {
@@ -45,7 +51,8 @@ public class DeviceManager {
     }
 
     public void removeDevice(int deviceIndex) {
-        mapOfDevices.remove(deviceIndex);
+        Device device = mapOfDevices.remove(deviceIndex);
+        eventBus.post(new DeviceRemovedEvent(device));
     }
 
     public void stopAllDevices() {

@@ -21,4 +21,8 @@ public class FXMLHelper {
         }
     }
 
+    public static FXMLLoader getFXMLLoader(String fxml) {
+        return  new FXMLLoader(Thread.currentThread().getContextClassLoader().getResource(fxml + ".fxml"));
+    }
+
 }
