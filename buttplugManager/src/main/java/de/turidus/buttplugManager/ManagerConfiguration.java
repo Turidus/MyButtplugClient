@@ -16,7 +16,7 @@ public class ManagerConfiguration {
         idProvider = new AtomicInteger(1);
     }
 
-    @Bean
+    @Bean("managerEventBus")
     public EventBus getEventBus() {
         return eventBus;
     }

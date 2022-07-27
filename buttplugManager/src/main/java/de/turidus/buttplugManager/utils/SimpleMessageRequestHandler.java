@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +23,7 @@ public class SimpleMessageRequestHandler {
     private final EventBus      eventBus;
     private final AtomicInteger idProvider;
 
-    public SimpleMessageRequestHandler(EventBus eventBus, AtomicInteger idProvider) {
+    public SimpleMessageRequestHandler(@Qualifier("managerEventBus") EventBus eventBus, AtomicInteger idProvider) {
 
         this.eventBus = eventBus;
         this.idProvider = idProvider;

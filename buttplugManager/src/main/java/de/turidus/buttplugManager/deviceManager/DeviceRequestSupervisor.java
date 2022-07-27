@@ -5,15 +5,18 @@ import de.turidus.buttplugManager.events.ClockEvent;
 import de.turidus.buttplugManager.events.SimpleMessageRequest;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DeviceRequestSupervisor {
 
     private final EventBus globalEventBus;
     private final double requestTimeInMS;
     private long deltaTInMS;
 
-    public DeviceRequestSupervisor(EventBus globalEventBus,
+    public DeviceRequestSupervisor(@Qualifier("managerEventBus") EventBus globalEventBus,
                                    @Value("${manager.deviceRequestTimeInMS}") double requestTimeInMS){
         this.globalEventBus = globalEventBus;
         this.requestTimeInMS = requestTimeInMS;

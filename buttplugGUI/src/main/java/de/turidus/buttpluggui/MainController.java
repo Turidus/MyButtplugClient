@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.greenrobot.eventbus.EventBus;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 public class MainController {
 
-    private final EventBus  defaultBus = EventBus.getDefault();
+    private EventBus     guiEventBus;
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     private final Map<Integer, DeviceController> deviceControllerMap = new HashMap<>();
@@ -43,6 +44,8 @@ public class MainController {
     private       Button    stopAllDevicesButton;
     @FXML
     private       HBox      hBox;
+    @FXML
+    private ScrollPane scrollPane;
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onDeviceAddedEvent(DeviceAddedEvent dae) {
@@ -62,21 +65,25 @@ public class MainController {
     public void connectButtonPressed() {
         String ip   = ipTextField.getText();
         int    port = Integer.parseInt(portTextField.getText());
-        defaultBus.post(new ConnectToServerEvent(ip, port));
+        guiEventBus.post(new ConnectToServerEvent(ip, port));
     }
 
     public void starScanningButtonPressed() {
-        defaultBus.post(new SimpleMessageRequest(MessageType.START_SCANNING));
-        defaultBus.post(new SimpleMessageRequest(MessageType.REQUEST_DEVICE_LIST));
+        guiEventBus.post(new SimpleMessageRequest(MessageType.START_SCANNING));
+        guiEventBus.post(new SimpleMessageRequest(MessageType.REQUEST_DEVICE_LIST));
     }
 
-    public void stopScanningButtonPressed() {defaultBus.post(new SimpleMessageRequest(MessageType.STOP_SCANNING));}
+    public void stopScanningButtonPressed() {guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_SCANNING));}
 
-    public void stopAllDevicesPressed() {defaultBus.post(new SimpleMessageRequest(MessageType.STOP_ALL_DEVICE));}
+    public void stopAllDevicesPressed() {guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_ALL_DEVICE));}
 
     public void initialize() {
-        defaultBus.register(this);
+
     }
 
+    public void setEventBus(EventBus guiEventBus) {
+        this.guiEventBus = guiEventBus;
+        guiEventBus.register(this);
+    }
 
 }

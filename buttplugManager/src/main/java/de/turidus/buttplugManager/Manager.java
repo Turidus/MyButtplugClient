@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class Manager {
     private final PingManager                   pingManager;
     private final Map<Integer, AbstractMessage> messageMap = new HashMap<>();
 
-    public Manager(EventBus eventBus, DeviceManager deviceManager, PingManager pingManager) {
+    public Manager(@Qualifier("managerEventBus") EventBus eventBus, DeviceManager deviceManager, PingManager pingManager) {
         this.eventBus = eventBus;
         this.deviceManager = deviceManager;
         this.pingManager = pingManager;

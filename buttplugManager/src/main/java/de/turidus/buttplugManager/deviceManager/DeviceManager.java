@@ -11,6 +11,7 @@ import de.turidus.buttplugManager.events.DeviceRemovedEvent;
 import de.turidus.buttplugManager.events.SimpleMessageRequest;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class DeviceManager {
     public final Map<Integer, Device> mapOfDevices;
 
 
-    public DeviceManager(EventBus eventBus, AtomicInteger idProvider, @Value("#{new java.util.HashMap()}") Map<Integer, Device> mapOfDevices) {
+    public DeviceManager(@Qualifier("managerEventBus") EventBus eventBus, AtomicInteger idProvider, @Value("#{new java.util.HashMap()}") Map<Integer, Device> mapOfDevices) {
         this.eventBus = eventBus;
         this.idProvider = idProvider;
         this.mapOfDevices = mapOfDevices;

@@ -2,3 +2,5 @@
 /buttplugClient/target/
 /buttplugGUI/target/
 /buttplugManager/target/
+
+/.idea/*

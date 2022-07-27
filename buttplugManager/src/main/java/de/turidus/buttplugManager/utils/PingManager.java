@@ -18,7 +18,7 @@ public class PingManager {
     private       int           triggerTime   = Integer.MAX_VALUE;
     private       int           currentDeltaT = 0;
 
-    public PingManager(EventBus eventBus, @Qualifier("idProvider") AtomicInteger idProvider) {
+    public PingManager(@Qualifier("managerEventBus") EventBus eventBus, @Qualifier("idProvider") AtomicInteger idProvider) {
         this.eventBus = eventBus;
         this.idProvider = idProvider;
         this.eventBus.register(this);

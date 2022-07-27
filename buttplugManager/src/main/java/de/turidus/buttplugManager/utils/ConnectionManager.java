@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.net.URISyntaxException;
@@ -18,7 +19,7 @@ public class ConnectionManager {
     private final EventBus eventBus;
     private ButtplugClient buttplugClient;
 
-    public ConnectionManager(EventBus eventBus){
+    public ConnectionManager(@Qualifier("managerEventBus") EventBus eventBus){
         this.eventBus = eventBus;
         this.eventBus.register(this);
     }

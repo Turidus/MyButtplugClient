@@ -23,15 +23,13 @@ public class ButtplugGUI extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         applicationContext.close();
         Platform.exit();
     }
 
     public static class StageReadyEvent extends ApplicationEvent {
-
         public StageReadyEvent(Stage stage) {super(stage);}
-
         public Stage getStage() {
             return (Stage) getSource();
         }
