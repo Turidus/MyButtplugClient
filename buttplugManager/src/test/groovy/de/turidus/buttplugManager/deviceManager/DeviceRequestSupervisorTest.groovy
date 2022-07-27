@@ -4,6 +4,7 @@ import de.turidus.buttplugClient.messages.enumerationMessages.RequestDeviceList
 import de.turidus.buttplugClient.messages.handshakeMessages.RequestServerInfo
 import de.turidus.buttplugManager.EventBusListener
 import de.turidus.buttplugManager.events.ClockEvent
+import de.turidus.buttplugManager.events.ConnectedEvent
 import de.turidus.buttplugManager.events.SimpleMessageRequest
 import org.greenrobot.eventbus.EventBus
 import org.springframework.stereotype.Component
@@ -31,9 +32,10 @@ class DeviceRequestSupervisorTest extends Specification{
         deviceRequestSupervisor != null
     }
 
-    def "After enough time passes, a request device list event is send."(){
+    def "If a connection event is received and enough time passes, a request device list event is send."(){
         DeviceRequestSupervisor deviceRequestSupervisor = new DeviceRequestSupervisor(eventBus, requestTimeInMS)
         when:
+        deviceRequestSupervisor.onConnectedEvent(new ConnectedEvent())
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS / 2L as long))
         then:
         eventBusListener.timesCalled == 0
@@ -42,6 +44,18 @@ class DeviceRequestSupervisorTest extends Specification{
         then:
         eventBusListener.timesCalled == 1
         eventBusListener.getClassOfLastEvent() == SimpleMessageRequest.class
+    }
+
+    def "If no connection event is received and enough time passes, no request device list event is send."(){
+        DeviceRequestSupervisor deviceRequestSupervisor = new DeviceRequestSupervisor(eventBus, requestTimeInMS)
+        when:
+        deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS / 2L as long))
+        then:
+        eventBusListener.timesCalled == 0
+        when:
+        deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS / 2L as long))
+        then:
+        eventBusListener.timesCalled == 0
     }
 
 }
