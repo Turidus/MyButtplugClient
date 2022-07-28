@@ -5,6 +5,7 @@ import de.turidus.buttplugManager.events.ClockEvent;
 import de.turidus.buttplugManager.events.NewMessageEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class PingManager {
         triggerTime = maxPingTime > 2 ? maxPingTime / 2 : maxPingTime;
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onClockEvent(ClockEvent clockEvent) {
         if(triggerTime == 0) {return;}
         currentDeltaT += clockEvent.deltaTInMS();

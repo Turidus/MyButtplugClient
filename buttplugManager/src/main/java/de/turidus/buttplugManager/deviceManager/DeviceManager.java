@@ -11,6 +11,7 @@ import de.turidus.buttplugManager.events.DeviceRemovedEvent;
 import de.turidus.buttplugManager.events.SimpleMessageRequest;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,10 +36,16 @@ public class DeviceManager {
         this.eventBus.register(this);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onClockEvent(ClockEvent clockEvent) {
         advanceAllMotorsOnAllDevices(clockEvent.deltaTInMS());
-        this.eventBus.post(new SendListOfMessagesEvent(collectDeviceMessages()));
+        sendDeviceMessages();
+
+    }
+
+    private void sendDeviceMessages() {
+        List<AbstractMessage> listOfMessages = collectDeviceMessages();
+        if(!listOfMessages.isEmpty()){ this.eventBus.post(new SendListOfMessagesEvent(listOfMessages)); }
     }
 
     public void addDevice(DeviceData deviceData) {
