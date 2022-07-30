@@ -69,7 +69,7 @@ class DeviceManagerTest extends Specification {
         device.deviceIndex == deviceData.DeviceIndex
         device.mapOfVibrationMotors.size() == deviceData.DeviceMessages.get("VibrateCmd").FeatureCount()
         device.mapOfRotationMotors.size() == deviceData.DeviceMessages.get("RotateCmd").FeatureCount()
-        device.mapOfLinearMotors.isEmpty()
+        device.mapOfLinearMotors.size() == deviceData.DeviceMessages.get("LinearCmd").FeatureCount()
     }
 
     def "Adding a device to the device manager, this send a DeviceAddedEvent."() {
@@ -119,11 +119,29 @@ class DeviceManagerTest extends Specification {
         device2.mapOfRotationMotors.get(0).getCurrentStep() == 0
     }
 
-    def "Advance all devices and send all messages"() {
+    def "When empty, a clock tick event does not advance all devices and send all messages"() {
         when:
-        eventBus.post(new ClockEvent(1000))
+        deviceManager.onClockEvent(new ClockEvent(100l))
+        then:
+        eventBusListener.timesCalled == 0
+    }
+
+    def "When adding the same device twice, the second try is rejected"(){
+        when:
+        deviceManager.addDevice(deviceData)
+        deviceManager.addDevice(deviceData)
+        then:
+        deviceManager.mapOfDevices.size() == 1
+        deviceManager.mapOfDevices.values().size() == 1
+        eventBusListener.timesCalled == 1
+    }
+
+    def "When not empty, a clock tick event advances all devices and sends all messages"() {
+        when:
+        deviceManager.addDevice(deviceData)
+        deviceManager.onClockEvent(new ClockEvent(100l))
         then:
         eventBusListener.timesCalled == 2
-        eventBusListener.listOfReceivedEvents.get(0).getClass() == SendListOfMessagesEvent.class
+        eventBusListener.getClassOfLastEvent() == SendListOfMessagesEvent.class
     }
 }

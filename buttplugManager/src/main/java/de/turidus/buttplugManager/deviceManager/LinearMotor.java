@@ -7,8 +7,8 @@ public class LinearMotor extends Motor {
 
     private double currentSpeedInStepPerMs = 0;
 
-    public LinearMotor(int motorIndex, int stepCount) {
-        super(motorIndex, stepCount);
+    public LinearMotor(int motorIndex, int stepCount, int groupID) {
+        super(motorIndex, stepCount, groupID);
     }
 
     @Override

@@ -7,8 +7,8 @@ public class RotationMotor extends Motor {
 
     private boolean clockwise = true;
 
-    public RotationMotor(int motorIndex, int stepCount) {
-        super(motorIndex, stepCount);
+    public RotationMotor(int motorIndex, int stepCount, int groupID) {
+        super(motorIndex, stepCount, groupID);
     }
 
     @Override

@@ -54,4 +54,8 @@ public class DeviceController {
         }
     }
 
+    public void stopAllMotors() {
+        vibrationMap.values().forEach(vibrationMotorController -> vibrationMotorController.stopMotor());
+    }
+
 }

@@ -26,6 +26,7 @@ public class DeviceManager {
 
     public final EventBus             eventBus;
     public final AtomicInteger        idProvider;
+    private final AtomicInteger groupIDProvider = new AtomicInteger();
     public final Map<Integer, Device> mapOfDevices;
 
 
@@ -49,9 +50,11 @@ public class DeviceManager {
     }
 
     public void addDevice(DeviceData deviceData) {
-        Device device = new Device(deviceData);
-        mapOfDevices.put(deviceData.DeviceIndex, device);
-        eventBus.post(new DeviceAddedEvent(device));
+        Device device = new Device(deviceData, groupIDProvider);
+        if(!mapOfDevices.containsKey(device.deviceIndex)){
+            mapOfDevices.put(deviceData.DeviceIndex, device);
+            eventBus.post(new DeviceAddedEvent(device));
+        }
     }
 
     public void addDevices(List<DeviceData> deviceDataList) {

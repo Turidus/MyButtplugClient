@@ -27,10 +27,10 @@ public class Device {
     public        int                              rssiLevel            = 0;
     private       boolean                          stoppable            = false;
 
-    public Device(DeviceData deviceData) {
+    public Device(DeviceData deviceData, AtomicInteger groupIDProvider) {
         name = deviceData.DeviceName;
         deviceIndex = deviceData.DeviceIndex;
-        addMotors(deviceData.DeviceMessages);
+        addMotors(deviceData.DeviceMessages, groupIDProvider);
         if(!stoppable) {logger.warn("Device " + deviceIndex + " had no stop command.");}
     }
 
@@ -93,33 +93,33 @@ public class Device {
         return stoppable;
     }
 
-    private void addMotors(HashMap<String, DeviceData.DeviceMessageAttribute> deviceMessages) {
+    private void addMotors(HashMap<String, DeviceData.DeviceMessageAttribute> deviceMessages, AtomicInteger groupIDProvider) {
         for(Map.Entry<String, DeviceData.DeviceMessageAttribute> entry : deviceMessages.entrySet()) {
             switch(entry.getKey()) {
-                case "VibrateCmd" -> addVibrationMotor(entry.getValue());
-                case "RotateCmd" -> addRotationMotor(entry.getValue());
-                case "LinearCmd" -> addLinearMotor(entry.getValue());
+                case "VibrateCmd" -> addVibrationMotor(entry.getValue(), groupIDProvider);
+                case "RotateCmd" -> addRotationMotor(entry.getValue(), groupIDProvider);
+                case "LinearCmd" -> addLinearMotor(entry.getValue(), groupIDProvider);
                 case "StopDeviceCmd" -> stoppable = true;
                 default -> logger.warn("Device " + deviceIndex + " had an unsupported command: " + entry.getKey());
             }
         }
     }
 
-    private void addLinearMotor(DeviceData.DeviceMessageAttribute data) {
+    private void addLinearMotor(DeviceData.DeviceMessageAttribute data, AtomicInteger groupIDProvider) {
         for(int i = 0; i < data.FeatureCount(); i++) {
-            mapOfLinearMotors.put(i, new LinearMotor(i, data.StepCount()[i]));
+            mapOfLinearMotors.put(i, new LinearMotor(i, data.StepCount()[i], groupIDProvider.getAndIncrement()));
         }
     }
 
-    private void addRotationMotor(DeviceData.DeviceMessageAttribute data) {
+    private void addRotationMotor(DeviceData.DeviceMessageAttribute data, AtomicInteger groupIDProvider) {
         for(int i = 0; i < data.FeatureCount(); i++) {
-            mapOfRotationMotors.put(i, new RotationMotor(i, data.StepCount()[i]));
+            mapOfRotationMotors.put(i, new RotationMotor(i, data.StepCount()[i], groupIDProvider.getAndIncrement()));
         }
     }
 
-    private void addVibrationMotor(DeviceData.DeviceMessageAttribute data) {
+    private void addVibrationMotor(DeviceData.DeviceMessageAttribute data, AtomicInteger groupIDProvider) {
         for(int i = 0; i < data.FeatureCount(); i++) {
-            mapOfVibrationMotors.put(i, new VibrationMotor(i, data.StepCount()[i]));
+            mapOfVibrationMotors.put(i, new VibrationMotor(i, data.StepCount()[i], groupIDProvider.getAndIncrement()));
         }
     }
 

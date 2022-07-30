@@ -2,17 +2,18 @@ package de.turidus.buttplugManager;
 
 import de.turidus.buttplugManager.events.ClockEvent;
 import org.greenrobot.eventbus.EventBus;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Clock extends Thread {
+public class Clock extends Thread implements DisposableBean {
 
     private final EventBus eventBus;
     private final int      loopTimeInMS;
     private       long     lastClockTime;
-    private       boolean  running;
+    private       boolean  running = true;
 
     public Clock(@Qualifier("managerEventBus") EventBus eventBus, @Value("${manager.loopTimeInMS}") int loopTimeInMS) {
         this.eventBus = eventBus;
@@ -32,6 +33,11 @@ public class Clock extends Thread {
             } catch(InterruptedException ignore) {
             }
         }
+    }
+
+    @Override
+    public void destroy() {
+        running = false;
     }
 
 }

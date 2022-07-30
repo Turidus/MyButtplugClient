@@ -75,7 +75,10 @@ public class MainController {
 
     public void stopScanningButtonPressed() {guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_SCANNING));}
 
-    public void stopAllDevicesPressed() {guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_ALL_DEVICE));}
+    public void stopAllDevicesPressed() {
+        deviceControllerMap.values().forEach(deviceController -> deviceController.stopAllMotors());
+        guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_ALL_DEVICE));
+    }
 
     public void initialize() {
 

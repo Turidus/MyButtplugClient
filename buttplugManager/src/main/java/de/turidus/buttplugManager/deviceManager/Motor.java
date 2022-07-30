@@ -12,11 +12,14 @@ public abstract class Motor {
     protected       double                             targetStep      = 0;
     protected       boolean                            manual          = true;
     protected       BiFunction<Double, Double, Double> speedFunction;
+    public int groupID;
+    public boolean groupLeader = true;
 
-    protected Motor(int motorIndex, int stepCount) {
+    protected Motor(int motorIndex, int stepCount, int groupID) {
         this.motorIndex = motorIndex;
         this.stepCount = stepCount;
         stepSize = 1d / stepCount;
+        this.groupID = groupID;
     }
 
     public abstract void calculateNextStep(double deltaTInMs);

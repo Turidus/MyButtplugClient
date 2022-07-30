@@ -5,8 +5,8 @@ import de.turidus.buttplugClient.messages.deviceMessages.genericDeviceMessage.Vi
 public class VibrationMotor extends Motor {
 
 
-    public VibrationMotor(int motorIndex, int stepCount) {
-        super(motorIndex, stepCount);
+    public VibrationMotor(int motorIndex, int stepCount, int groupID) {
+        super(motorIndex, stepCount, groupID);
     }
 
     @Override
