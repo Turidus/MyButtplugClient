@@ -65,4 +65,8 @@ public class MainController {
         this.guiEventBus = guiEventBus;
     }
 
+    public void setConnected(boolean b) {
+        connectButton.setDisable(b);
+    }
+
 }

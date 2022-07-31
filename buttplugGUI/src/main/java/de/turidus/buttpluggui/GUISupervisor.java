@@ -2,6 +2,7 @@ package de.turidus.buttpluggui;
 
 import de.turidus.buttplugManager.deviceManager.Device;
 import de.turidus.buttplugManager.deviceManager.VibrationMotor;
+import de.turidus.buttplugManager.events.ConnectedEvent;
 import de.turidus.buttplugManager.events.DeviceAddedEvent;
 import de.turidus.buttpluggui.deviceControllers.DeviceController;
 import de.turidus.buttpluggui.events.StopDevicesEvent;
@@ -55,6 +56,11 @@ public class GUISupervisor extends AnimationTimer {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onDeviceAddedEvent(DeviceAddedEvent dae) {
         generateDeviceController(dae, getMotors(dae.device()));
+    }
+
+    @Subscribe
+    public void onConnectedEvent(ConnectedEvent connectedEvent) {
+        mainController.setConnected(true);
     }
 
     private DeviceData getMotors(Device device) {
