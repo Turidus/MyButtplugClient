@@ -52,7 +52,7 @@ public class ButtplugClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        logger.info("Got Message from Server: " + message);
+        logger.debug("Got Message from Server: " + message);
 
         List<Message> messageList = MessageDeserializer.getListOfMessages(message);
         for(Message msg : messageList) {
@@ -77,7 +77,7 @@ public class ButtplugClient extends WebSocketClient {
 
     public void sendListOfMessages(List<AbstractMessage> messages) {
         String jsonToSend = AbstractMessage.listToJsonString(messages);
-        logger.info("Sending message to server: " + jsonToSend);
+        logger.debug("Sending message to server: " + jsonToSend);
         send(jsonToSend);
     }
 
