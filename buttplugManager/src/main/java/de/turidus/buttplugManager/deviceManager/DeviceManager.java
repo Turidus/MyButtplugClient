@@ -4,14 +4,15 @@ import de.turidus.buttplugClient.devices.DeviceData;
 import de.turidus.buttplugClient.enums.MessageType;
 import de.turidus.buttplugClient.events.SendListOfMessagesEvent;
 import de.turidus.buttplugClient.messages.AbstractMessage;
+import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.BatteryLevelCmd;
+import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.RSSILevelCmd;
 import de.turidus.buttplugManager.enums.MotorType;
-import de.turidus.buttplugManager.events.ClockEvent;
-import de.turidus.buttplugManager.events.DeviceAddedEvent;
-import de.turidus.buttplugManager.events.DeviceRemovedEvent;
-import de.turidus.buttplugManager.events.SimpleMessageRequest;
+import de.turidus.buttplugManager.events.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class DeviceManager {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     public final EventBus             eventBus;
     public final AtomicInteger        idProvider;
     private final AtomicInteger groupIDProvider = new AtomicInteger();
@@ -42,6 +44,18 @@ public class DeviceManager {
         advanceAllMotorsOnAllDevices(clockEvent.deltaTInMS());
         sendDeviceMessages();
 
+    }
+
+    @Subscribe
+    public void onNotifyDeviceManagerEvent(NotifyDeviceManagerEvent notifyDeviceManagerEvent) {
+        if(notifyDeviceManagerEvent.failedMsg() instanceof BatteryLevelCmd batteryLevelCmd){
+            mapOfDevices.get(batteryLevelCmd.DeviceIndex).senseBattery = false;
+            logger.warn("Turned off battery sensing for Device " + batteryLevelCmd.DeviceIndex);
+        }
+        else if(notifyDeviceManagerEvent.failedMsg() instanceof RSSILevelCmd rssiLevelCmd){
+            mapOfDevices.get(rssiLevelCmd.DeviceIndex).senseRSSI = false;
+            logger.warn("Turned off RSSI sensing for Device " + rssiLevelCmd.DeviceIndex);
+        }
     }
 
     private void sendDeviceMessages() {
@@ -77,7 +91,6 @@ public class DeviceManager {
     public void setTargetStepOnDeviceByType(int deviceIndex, MotorType motorType, Double targetStep) {
         mapOfDevices.get(deviceIndex).setTargetStepOnAllMotorsByType(motorType, targetStep);
     }
-
     private List<AbstractMessage> collectDeviceMessages() {
         List<AbstractMessage> messageList = new ArrayList<>();
         for(Device device : mapOfDevices.values()) {

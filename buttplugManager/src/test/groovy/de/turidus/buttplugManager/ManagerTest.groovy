@@ -4,7 +4,10 @@ import de.turidus.buttplugClient.devices.DeviceData
 import de.turidus.buttplugClient.enums.ErrorCodeEnum
 import de.turidus.buttplugClient.enums.MessageType
 import de.turidus.buttplugClient.events.GotMessageEvent
+import de.turidus.buttplugClient.events.SendListOfMessagesEvent
 import de.turidus.buttplugClient.events.SendMessageEvent
+import de.turidus.buttplugClient.messages.AbstractMessage
+import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.BatteryLevelCmd
 import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.BatteryLevelReading
 import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.RSSILevelReading
 import de.turidus.buttplugClient.messages.deviceMessages.rawDeviceMessages.RawReading
@@ -18,7 +21,10 @@ import de.turidus.buttplugClient.messages.statusMessages.Ping
 import de.turidus.buttplugManager.deviceManager.Device
 import de.turidus.buttplugManager.deviceManager.DeviceManager
 import de.turidus.buttplugManager.events.ClockEvent
+import de.turidus.buttplugManager.events.NewMessageEvent
+import de.turidus.buttplugManager.events.NewMessageListEvent
 import de.turidus.buttplugManager.events.NewRawReading
+import de.turidus.buttplugManager.events.NotifyDeviceManagerEvent
 import de.turidus.buttplugManager.utils.PingManager
 import org.greenrobot.eventbus.EventBus
 import spock.lang.Shared
@@ -110,6 +116,17 @@ class ManagerTest extends Specification {
         manager.sizeOfMessageMap() == 0
     }
 
+    def "If an device Error is received, a NotifyDeviceManagerEvent is fired, containing the failed Message."(){
+        NewMessageEvent nme = new NewMessageEvent(1, new BatteryLevelCmd(1, 1))
+        manager.onNewMessageEvent(nme)
+        when:
+        manager.onGotMessageEvent(new GotMessageEvent(new Error(1, "test", ErrorCodeEnum.ERROR_DEVICE), MessageType.ERROR))
+        then:
+        eventBusListener.timesCalled == 2
+        eventBusListener.getClassOfLastEvent() == NotifyDeviceManagerEvent.class
+        ((BatteryLevelCmd) ((NotifyDeviceManagerEvent) eventBusListener.listOfReceivedEvents.get(0)).failedMsg()) == nme.message()
+    }
+
     def "A DeviceList is received and devices are made"() {
         List<DeviceData> deviceDataList = new ArrayList<>()
         deviceDataList.add(deviceData)
@@ -153,5 +170,14 @@ class ManagerTest extends Specification {
         eventBus.post(new GotMessageEvent(new RSSILevelReading(0, deviceData.DeviceIndex, 5), MessageType.RSSI_LEVEL_READING))
         then:
         deviceManager.mapOfDevices.get(deviceData.DeviceIndex).rssiLevel == 5
+    }
+
+    def "On receiving a NewMessageListEvent, a SendListOfMessagesEvent is fired and messages are put into the msg map."(){
+        when:
+        manager.onNewMessageListEvent(new NewMessageListEvent(Collections.singletonList(new Ok(1))))
+        then:
+        manager.sizeOfMessageMap() == 1
+        eventBusListener.timesCalled == 1
+        eventBusListener.getClassOfLastEvent() == SendListOfMessagesEvent.class
     }
 }

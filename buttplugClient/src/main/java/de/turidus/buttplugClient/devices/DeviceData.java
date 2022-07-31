@@ -1,5 +1,7 @@
 package de.turidus.buttplugClient.devices;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
@@ -39,7 +41,6 @@ public class DeviceData {
     public int hashCode() {
         return Objects.hash(DeviceName, DeviceIndex, DeviceMessages);
     }
-
 
     public record DeviceMessageAttribute(int FeatureCount, int[] StepCount) {
 

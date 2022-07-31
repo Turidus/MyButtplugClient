@@ -1,7 +1,9 @@
 package de.turidus.buttplugManager;
 
 import de.turidus.buttplugClient.devices.DeviceData;
+import de.turidus.buttplugClient.enums.ErrorCodeEnum;
 import de.turidus.buttplugClient.events.GotMessageEvent;
+import de.turidus.buttplugClient.events.SendListOfMessagesEvent;
 import de.turidus.buttplugClient.events.SendMessageEvent;
 import de.turidus.buttplugClient.messages.AbstractMessage;
 import de.turidus.buttplugClient.messages.Message;
@@ -16,7 +18,9 @@ import de.turidus.buttplugClient.messages.statusMessages.Error;
 import de.turidus.buttplugClient.messages.statusMessages.Ok;
 import de.turidus.buttplugManager.deviceManager.DeviceManager;
 import de.turidus.buttplugManager.events.NewMessageEvent;
+import de.turidus.buttplugManager.events.NewMessageListEvent;
 import de.turidus.buttplugManager.events.NewRawReading;
+import de.turidus.buttplugManager.events.NotifyDeviceManagerEvent;
 import de.turidus.buttplugManager.utils.PingManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -68,6 +72,12 @@ public class Manager {
         eventBus.post(new SendMessageEvent(nme.message()));
     }
 
+    @Subscribe
+    public void onNewMessageListEvent(NewMessageListEvent event) {
+        event.messageList().forEach(msg -> messageMap.put(msg.Id, msg));
+        eventBus.post(new SendListOfMessagesEvent(event.messageList()));
+    }
+
     public int sizeOfMessageMap() {
         return messageMap.size();
     }
@@ -79,7 +89,14 @@ public class Manager {
     private void handelError(Message msg) {
         Error           error     = (Error) msg;
         AbstractMessage failedMsg = messageMap.remove(error.Id);
-        logger.warn("Message " + failedMsg.toString() + " failed: " + error);
+        handelErrorByType(error, failedMsg);
+        logger.warn("Message " + failedMsg + " failed: " + error);
+    }
+
+    private void handelErrorByType(Error error, AbstractMessage failedMsg) {
+        if(error.getErrorCodeEnum() == ErrorCodeEnum.ERROR_DEVICE){
+            eventBus.post(new NotifyDeviceManagerEvent(failedMsg));
+        }
     }
 
     private void handelServerInfo(ServerInfo msg) {
@@ -113,5 +130,4 @@ public class Manager {
         RSSILevelReading rssiLevelReading = (RSSILevelReading) msg;
         deviceManager.mapOfDevices.get(rssiLevelReading.DeviceIndex).rssiLevel = rssiLevelReading.RSSILevel;
     }
-
 }

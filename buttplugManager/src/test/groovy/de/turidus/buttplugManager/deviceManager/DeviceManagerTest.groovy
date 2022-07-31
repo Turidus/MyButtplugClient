@@ -2,6 +2,8 @@ package de.turidus.buttplugManager.deviceManager
 
 import de.turidus.buttplugClient.devices.DeviceData
 import de.turidus.buttplugClient.events.SendListOfMessagesEvent
+import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.BatteryLevelCmd
+import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.RSSILevelCmd
 import de.turidus.buttplugClient.messages.enumerationMessages.DeviceAdded
 import de.turidus.buttplugClient.messages.enumerationMessages.DeviceRemoved
 import de.turidus.buttplugManager.EventBusListener
@@ -9,6 +11,7 @@ import de.turidus.buttplugManager.enums.MotorType
 import de.turidus.buttplugManager.events.ClockEvent
 import de.turidus.buttplugManager.events.DeviceAddedEvent
 import de.turidus.buttplugManager.events.DeviceRemovedEvent
+import de.turidus.buttplugManager.events.NotifyDeviceManagerEvent
 import org.greenrobot.eventbus.EventBus
 import spock.lang.Shared
 import spock.lang.Specification
@@ -35,6 +38,7 @@ class DeviceManagerTest extends Specification {
     EventBus eventBus
     EventBusListener eventBusListener
     DeviceManager deviceManager
+    AtomicInteger atomicInteger
 
     def setupSpec() {
         deviceMessageAttribute_vibrateCmd = new DeviceData.DeviceMessageAttribute(2, new int[]{10, 20})
@@ -54,6 +58,7 @@ class DeviceManagerTest extends Specification {
         eventBus = new EventBus()
         eventBusListener = new EventBusListener(eventBus)
         deviceManager = new DeviceManager(eventBus, new AtomicInteger(), new HashMap<Integer, Device>())
+        atomicInteger = new AtomicInteger()
     }
 
     def Device_Manager_Test() {
@@ -63,7 +68,7 @@ class DeviceManagerTest extends Specification {
     }
 
     def "Building a device"() {
-        Device device = new Device(deviceData)
+        Device device = new Device(deviceData, atomicInteger)
         expect:
         device.name == deviceData.DeviceName
         device.deviceIndex == deviceData.DeviceIndex
@@ -143,5 +148,25 @@ class DeviceManagerTest extends Specification {
         then:
         eventBusListener.timesCalled == 2
         eventBusListener.getClassOfLastEvent() == SendListOfMessagesEvent.class
+    }
+
+    def "When receiving a NotifyDeviceManagerEvent containing a BatteryLevelCmd, the DeviceManager turns off battery level sensing for the device."(){
+        deviceManager.addDevice(deviceData)
+        Device device = deviceManager.mapOfDevices.get(1)
+        BatteryLevelCmd blc = new BatteryLevelCmd(1, 1)
+        when:
+        deviceManager.onNotifyDeviceManagerEvent(new NotifyDeviceManagerEvent(blc))
+        then:
+        !device.senseBattery
+    }
+
+    def "When receiving a NotifyDeviceManagerEvent containing a RSSILevelCmd, the DeviceManager turns off RSSI level sensing for the device."(){
+        deviceManager.addDevice(deviceData)
+        Device device = deviceManager.mapOfDevices.get(1)
+        RSSILevelCmd rlc = new RSSILevelCmd(1, 1)
+        when:
+        deviceManager.onNotifyDeviceManagerEvent(new NotifyDeviceManagerEvent(rlc))
+        then:
+        !device.senseRSSI
     }
 }
