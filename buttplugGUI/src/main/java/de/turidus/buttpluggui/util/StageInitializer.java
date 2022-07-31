@@ -17,10 +17,10 @@ import static de.turidus.buttpluggui.ButtplugGUI.StageReadyEvent;
 @Component
 public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 
-    private final EventBus guiEventBus;
-    public MainController  mainController;
+    private final EventBus       guiEventBus;
+    public        MainController mainController;
 
-    public StageInitializer(@Qualifier("guiEventBus") EventBus guiEventBus){
+    public StageInitializer(@Qualifier("guiEventBus") EventBus guiEventBus) {
         this.guiEventBus = guiEventBus;
     }
 
@@ -30,9 +30,10 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     public void onApplicationEvent(StageReadyEvent stageReadyEvent) {
         Stage      stage  = stageReadyEvent.getStage();
         FXMLLoader loader = FXMLHelper.getFXMLLoader("de/turidus/buttpluggui/mainView");
-        Scene scene = new Scene(loader.load(), 300, 432);
+        Scene      scene  = new Scene(loader.load(), 300, 432);
         mainController = loader.getController();
         mainController.setEventBus(guiEventBus);
+        guiEventBus.post(mainController);
         builtScene(stage, scene);
         stage.show();
     }
