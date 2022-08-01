@@ -46,9 +46,13 @@ public class MainController {
     public void starScanningButtonPressed() {
         guiEventBus.post(new SimpleMessageRequest(MessageType.START_SCANNING));
         guiEventBus.post(new SimpleMessageRequest(MessageType.REQUEST_DEVICE_LIST));
+        switchScanningButtons(true);
     }
 
-    public void stopScanningButtonPressed() {guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_SCANNING));}
+    public void stopScanningButtonPressed() {
+        guiEventBus.post(new SimpleMessageRequest(MessageType.STOP_SCANNING));
+        switchScanningButtons(false);
+    }
 
     public void stopAllDevicesPressed() {
         guiEventBus.post(new StopDevicesEvent());
@@ -59,14 +63,21 @@ public class MainController {
         Platform.runLater(() -> hBox.getChildren().add(parent));
     }
 
-    public void initialize() {}
+    public void initialize() {
+        stopScanningButton.setDisable(true);
+    }
 
     public void setEventBus(EventBus guiEventBus) {
         this.guiEventBus = guiEventBus;
     }
 
-    public void setConnected(boolean b) {
-        connectButton.setDisable(b);
+    public void setConnected(boolean connected) {
+        connectButton.setDisable(connected);
+    }
+
+    private void switchScanningButtons(boolean disableStartScanningButton) {
+        starScanningButton.setDisable(disableStartScanningButton);
+        stopScanningButton.setDisable(!disableStartScanningButton);
     }
 
 }

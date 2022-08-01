@@ -25,9 +25,9 @@ public class Device {
     private final Logger                           logger               = LoggerFactory.getLogger(this.getClass().getSimpleName());
     public        double                           batteryLevel         = 1;
     public        int                              rssiLevel            = 0;
-    private boolean stoppable    = false;
-    public  boolean senseBattery = true;
-    public boolean senseRSSI = true;
+    public        boolean                          senseBattery         = true;
+    public        boolean                          senseRSSI            = true;
+    private       boolean                          stoppable            = false;
 
     public Device(DeviceData deviceData, AtomicInteger groupIDProvider) {
         name = deviceData.DeviceName;

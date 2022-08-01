@@ -36,11 +36,13 @@ public class GUISupervisor extends AnimationTimer {
     public GUISupervisor(@Qualifier("guiEventBus") EventBus eventBus) {
         this.eventBus = eventBus;
         eventBus.register(this);
+        start();
     }
 
     @Override
     public void handle(long now) {
         if(mainController == null) {return;}
+        deviceControllerMap.values().forEach(this::setStateOfController);
     }
 
     @Subscribe
@@ -61,6 +63,23 @@ public class GUISupervisor extends AnimationTimer {
     @Subscribe
     public void onConnectedEvent(ConnectedEvent connectedEvent) {
         mainController.setConnected(true);
+    }
+
+    private void setStateOfController(Controllers controllers) {
+        setStateOfDeviceController(controllers.deviceController);
+    }
+
+    private void setStateOfDeviceController(DeviceController deviceController) {
+        Device device = deviceController.device;
+        setDeviceAndRSSIBatteryState(deviceController, device);
+        deviceController.setRSSILevel(device.rssiLevel);
+    }
+
+    private void setDeviceAndRSSIBatteryState(DeviceController deviceController, Device device) {
+        if(device.senseBattery) {deviceController.setBatteryLevel(device.batteryLevel);}
+        else {deviceController.disableBatteryLevel(true);}
+        if(device.senseRSSI) {deviceController.setRSSILevel(device.rssiLevel);}
+        else {deviceController.disableRSSILevel(true);}
     }
 
     private DeviceData getMotors(Device device) {

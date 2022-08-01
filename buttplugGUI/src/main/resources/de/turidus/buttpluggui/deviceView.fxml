@@ -12,8 +12,8 @@
          <children>
             <AnchorPane minHeight="390.0" minWidth="50.0" prefWidth="50.0">
                <children>
-                  <Label alignment="CENTER" layoutX="4.0" layoutY="6.0" text="Bat" AnchorPane.leftAnchor="4.0" AnchorPane.topAnchor="5.0" />
-                  <Label alignment="CENTER" layoutX="30.0" layoutY="5.0" text="RSSI" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="5.0" />
+                  <Label fx:id="batLabel" alignment="CENTER" layoutX="4.0" layoutY="6.0" text="Bat" AnchorPane.leftAnchor="4.0" AnchorPane.topAnchor="5.0" />
+                  <Label fx:id="rssiLabel" alignment="CENTER" layoutX="30.0" layoutY="5.0" text="RSSI" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="5.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" disable="true" fill="#1f96ff00" height="350.0" layoutX="-87.0" layoutY="95.0" stroke="BLACK" strokeType="INSIDE" width="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="30.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" disable="true" fill="#1f96ff00" height="350.0" layoutX="-77.0" layoutY="105.0" stroke="BLACK" strokeType="INSIDE" width="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
                   <Rectangle fx:id="batteryLevel" arcHeight="5.0" arcWidth="5.0" disable="true" fill="#3bff0a" height="348.0" layoutX="-77.0" layoutY="105.0" stroke="TRANSPARENT" strokeType="INSIDE" width="23.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="31.0" />

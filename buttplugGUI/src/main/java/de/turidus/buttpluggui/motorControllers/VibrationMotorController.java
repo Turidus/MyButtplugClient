@@ -11,23 +11,18 @@ import org.slf4j.LoggerFactory;
 
 public class VibrationMotorController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
+    private final Logger         logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    public        VibrationMotor motor;
     @FXML
-    private Label motorLabel;
-
+    private       Label          motorLabel;
     @FXML
-    private Slider mainSlider;
-
+    private       Slider         mainSlider;
     @FXML
-    private CheckBox automatedCheckBox;
-
+    private       CheckBox       automatedCheckBox;
     @FXML
-    private Button selectFunctionButton;
-
+    private       Button         selectFunctionButton;
     @FXML
-    private TextField      groupTextField;
-    private VibrationMotor motor;
+    private       TextField      groupTextField;
 
     public void addMotor(VibrationMotor vibrationMotor) {
         motor = vibrationMotor;
