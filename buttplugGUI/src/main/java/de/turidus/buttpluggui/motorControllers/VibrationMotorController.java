@@ -16,6 +16,8 @@ public class VibrationMotorController {
     @FXML
     private       Label          motorLabel;
     @FXML
+    private       Label          groupLeaderLabel;
+    @FXML
     private       Slider         mainSlider;
     @FXML
     private       CheckBox       automatedCheckBox;
@@ -41,6 +43,21 @@ public class VibrationMotorController {
         mainSlider.setValue(0);
         motor.stop();
     }
+
+    public void automationSelected() {
+        mainSlider.setDisable(automatedCheckBox.isSelected());
+    }
+
+    public void checkIfGroupLeader() {
+        groupLeaderLabel.setVisible(motor.groupLeader);
+        if(!automatedCheckBox.isSelected()) {mainSlider.setDisable(!motor.groupLeader);}
+        automatedCheckBox.setDisable(!motor.groupLeader);
+    }
+
+    public void setSliderToValue() {
+        if(!motor.groupLeader || automatedCheckBox.isSelected()) {mainSlider.setValue(motor.getCurrentStep());}
+    }
+
 
     private void setupGroupTextField() {
         groupTextField.setText(String.valueOf(motor.groupID));
@@ -71,7 +88,6 @@ public class VibrationMotorController {
 
     private void builtManualCheck() {
         automatedCheckBox.selectedProperty().set(false);
-        automatedCheckBox.selectedProperty().bindBidirectional(mainSlider.disableProperty());
     }
 
     private void builtSlider() {

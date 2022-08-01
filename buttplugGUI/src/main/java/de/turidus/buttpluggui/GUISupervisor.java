@@ -67,6 +67,16 @@ public class GUISupervisor extends AnimationTimer {
 
     private void setStateOfController(Controllers controllers) {
         setStateOfDeviceController(controllers.deviceController);
+        setStateOfVibrationMotorControllers(controllers.vibrationMap);
+    }
+
+    private void setStateOfVibrationMotorControllers(Map<Integer, VibrationMotorController> vibrationMap) {
+        vibrationMap.values().forEach(this::setStateOfVibrationMotorController);
+    }
+
+    private void setStateOfVibrationMotorController(VibrationMotorController vibrationMotorController) {
+        vibrationMotorController.checkIfGroupLeader();
+        vibrationMotorController.setSliderToValue();
     }
 
     private void setStateOfDeviceController(DeviceController deviceController) {
