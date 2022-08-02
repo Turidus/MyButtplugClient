@@ -50,12 +50,14 @@ public class VibrationMotorController {
 
     public void checkIfGroupLeader() {
         groupLeaderLabel.setVisible(motor.groupLeader);
-        if(!automatedCheckBox.isSelected()) {mainSlider.setDisable(!motor.groupLeader);}
+        if(!automatedCheckBox.isSelected()) {mainSlider.setMouseTransparent(!motor.groupLeader);}
         automatedCheckBox.setDisable(!motor.groupLeader);
     }
 
     public void setSliderToValue() {
-        if(!motor.groupLeader || automatedCheckBox.isSelected()) {mainSlider.setValue(motor.getCurrentStep());}
+        if(!motor.groupLeader || automatedCheckBox.isSelected()) {
+            mainSlider.setValue(100 * motor.getCurrentStep());
+        }
     }
 
 

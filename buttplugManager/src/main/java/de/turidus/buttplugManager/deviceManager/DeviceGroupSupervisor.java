@@ -102,7 +102,6 @@ public class DeviceGroupSupervisor {
 
         public void addMotor(Motor motor) {
             if(empty) {
-                System.out.println("LM null? " + (leadingMotor == null));
                 leadingMotor = motor;
                 motor.groupLeader = true;
                 empty = false;
