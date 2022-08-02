@@ -50,7 +50,6 @@ public class DeviceController {
 
     public void setBatteryLevel(double batteryLevelValue) {
         Platform.runLater(() -> this.batteryLevel.setHeight(maxHeight * batteryLevelValue));
-        System.out.println("Did run?");
     }
 
     public void setRSSILevel(int rssiLevelValue) {

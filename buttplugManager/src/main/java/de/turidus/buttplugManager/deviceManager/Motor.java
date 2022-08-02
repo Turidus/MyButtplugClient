@@ -7,13 +7,13 @@ public abstract class Motor {
     protected final int                                motorIndex;
     protected final int                                stepCount;
     protected final double                             stepSize;
+    public          int                                groupID;
+    public          boolean                            groupLeader     = true;
     protected       double                             currentStep     = 0;
     protected       double                             currentFineStep = 0;
     protected       double                             targetStep      = 0;
     protected       boolean                            manual          = true;
     protected       BiFunction<Double, Double, Double> speedFunction;
-    public int groupID;
-    public boolean groupLeader = true;
 
     protected Motor(int motorIndex, int stepCount, int groupID) {
         this.motorIndex = motorIndex;
@@ -34,8 +34,11 @@ public abstract class Motor {
         }
         targetStep = nextTargetStep;
     }
-    public int getMotorIndex(){ return motorIndex;
+
+    public int getMotorIndex() {
+        return motorIndex;
     }
+
     public int getStepCount() {
         return stepCount;
     }
