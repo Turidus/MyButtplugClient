@@ -30,7 +30,7 @@ public class DeviceGroupSupervisor {
     }
 
     private void applyAllLeaderValueToFollowers() {
-        deviceGroupMap.values().forEach(DeviceGroup::applyLeaderValueToFollowers);
+        deviceGroupMap.values().parallelStream().forEach(DeviceGroup::applyLeaderValueToFollowers);
     }
 
     @Subscribe
@@ -50,7 +50,7 @@ public class DeviceGroupSupervisor {
 
     private List<Motor> getUnfitMotors() {
         List<Motor> motorList = new ArrayList<>();
-        deviceGroupMap.values().forEach(dg -> motorList.addAll(dg.removeAllMotorsWithUnfitGroupID()));
+        deviceGroupMap.values().parallelStream().forEach(dg -> motorList.addAll(dg.removeAllMotorsWithUnfitGroupID()));
         return motorList;
     }
 
@@ -143,7 +143,7 @@ public class DeviceGroupSupervisor {
 
         public void applyLeaderValueToFollowers() {
             if(empty) {return;}
-            followerList.forEach(motor -> motor.setNextTarget(leadingMotor.getCurrentStep()));
+            followerList.parallelStream().forEach(motor -> motor.setNextTarget(leadingMotor.getCurrentStep()));
         }
 
         private List<Motor> searchForUnfitGroupIDs() {
@@ -151,7 +151,7 @@ public class DeviceGroupSupervisor {
             if(empty) {return motorList;}
 
             if(leadingMotor.groupID != groupID) {motorList.add(leadingMotor);}
-            motorList.addAll(followerList.stream().filter(motor -> motor.groupID != groupID).toList());
+            motorList.addAll(followerList.parallelStream().filter(motor -> motor.groupID != groupID).toList());
             return motorList;
         }
 
