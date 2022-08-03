@@ -1,4 +1,4 @@
-package de.turidus.buttplugManager.deviceManager;
+package de.turidus.buttplugManager.deviceManager.motors;
 
 import java.util.function.BiFunction;
 

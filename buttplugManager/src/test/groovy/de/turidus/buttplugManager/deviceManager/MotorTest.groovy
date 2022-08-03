@@ -1,6 +1,9 @@
 package de.turidus.buttplugManager.deviceManager
 
 import de.turidus.buttplugClient.devices.DeviceData
+import de.turidus.buttplugManager.deviceManager.motors.LinearMotor
+import de.turidus.buttplugManager.deviceManager.motors.RotationMotor
+import de.turidus.buttplugManager.deviceManager.motors.VibrationMotor
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -28,7 +31,7 @@ class MotorTest extends Specification {
         deviceMessageAttribute_stopCmd = null
     }
 
-    def setup(){
+    def setup() {
         atomicInteger = new AtomicInteger();
     }
 

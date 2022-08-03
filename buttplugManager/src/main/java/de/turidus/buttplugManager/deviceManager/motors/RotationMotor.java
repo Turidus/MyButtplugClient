@@ -1,4 +1,4 @@
-package de.turidus.buttplugManager.deviceManager;
+package de.turidus.buttplugManager.deviceManager.motors;
 
 
 import de.turidus.buttplugClient.messages.deviceMessages.genericDeviceMessage.RotateCmd;

@@ -5,10 +5,10 @@ import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.Ba
 import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.RSSILevelCmd
 import de.turidus.buttplugClient.messages.enumerationMessages.RequestDeviceList
 import de.turidus.buttplugManager.EventBusListener
+import de.turidus.buttplugManager.deviceManager.supervisors.DeviceDataRequestSupervisor
 import de.turidus.buttplugManager.events.ClockEvent
 import de.turidus.buttplugManager.events.ConnectedEvent
 import de.turidus.buttplugManager.events.NewMessageListEvent
-import de.turidus.buttplugManager.events.SimpleMessageRequest
 import org.greenrobot.eventbus.EventBus
 import org.springframework.stereotype.Component
 import spock.lang.Shared
@@ -17,7 +17,7 @@ import spock.lang.Specification
 import java.util.concurrent.atomic.AtomicInteger
 
 @Component
-class DeviceDataRequestSupervisorTest extends Specification{
+class DeviceDataRequestSupervisorTest extends Specification {
 
     @Shared
     DeviceData.DeviceMessageAttribute deviceMessageAttribute_vibrateCmd
@@ -66,7 +66,7 @@ class DeviceDataRequestSupervisorTest extends Specification{
         deviceRequestSupervisor != null
     }
 
-    def "If no connection event is received and enough time passes, no events are send."(){
+    def "If no connection event is received and enough time passes, no events are send."() {
         when:
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS / 2L as long))
         then:
@@ -77,7 +77,7 @@ class DeviceDataRequestSupervisorTest extends Specification{
         eventBusListener.timesCalled == 0
     }
 
-    def "If a connection event is received and enough time passes, list of messages is send, including one device request."(){
+    def "If a connection event is received and enough time passes, list of messages is send, including one device request."() {
         when:
         deviceRequestSupervisor.onConnectedEvent(new ConnectedEvent())
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS / 2L as long))
@@ -88,11 +88,11 @@ class DeviceDataRequestSupervisorTest extends Specification{
         then:
         eventBusListener.timesCalled == 1
         eventBusListener.getClassOfLastEvent() == NewMessageListEvent.class
-        ((NewMessageListEvent)eventBusListener.listOfReceivedEvents.get(0)).messageList().
-                find({msg -> msg.class == RequestDeviceList.class}) != null
+        ((NewMessageListEvent) eventBusListener.listOfReceivedEvents.get(0)).messageList().
+                find({ msg -> msg.class == RequestDeviceList.class }) != null
     }
 
-    def "If a device sense battery level is true, send battery level requests"(){
+    def "If a device sense battery level is true, send battery level requests"() {
         deviceManager.addDevice(deviceData)
         Device device = deviceManager.mapOfDevices.get(1)
         device.senseBattery = false
@@ -101,7 +101,7 @@ class DeviceDataRequestSupervisorTest extends Specification{
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS + 1))
         then:
         eventBusListener.timesCalled == 2
-        ((NewMessageListEvent)eventBusListener.listOfReceivedEvents.get(0)).messageList()
+        ((NewMessageListEvent) eventBusListener.listOfReceivedEvents.get(0)).messageList()
                 .stream()
                 .filter(msg -> msg instanceof BatteryLevelCmd)
                 .collect().isEmpty()
@@ -110,13 +110,13 @@ class DeviceDataRequestSupervisorTest extends Specification{
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS))
         then:
         eventBusListener.timesCalled == 3
-        !((NewMessageListEvent)eventBusListener.listOfReceivedEvents.get(0)).messageList()
+        !((NewMessageListEvent) eventBusListener.listOfReceivedEvents.get(0)).messageList()
                 .stream()
                 .filter(msg -> msg instanceof BatteryLevelCmd)
                 .collect().isEmpty()
     }
 
-    def "If a device sense RSSI level is true, send RSSI level requests"(){
+    def "If a device sense RSSI level is true, send RSSI level requests"() {
         deviceManager.addDevice(deviceData)
         Device device = deviceManager.mapOfDevices.get(1)
         device.senseRSSI = false
@@ -125,7 +125,7 @@ class DeviceDataRequestSupervisorTest extends Specification{
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS + 1))
         then:
         eventBusListener.timesCalled == 2
-        ((NewMessageListEvent)eventBusListener.listOfReceivedEvents.get(0)).messageList()
+        ((NewMessageListEvent) eventBusListener.listOfReceivedEvents.get(0)).messageList()
                 .stream()
                 .filter(msg -> msg instanceof RSSILevelCmd)
                 .collect().isEmpty()
@@ -134,7 +134,7 @@ class DeviceDataRequestSupervisorTest extends Specification{
         deviceRequestSupervisor.onClockEvent(new ClockEvent(requestTimeInMS))
         then:
         eventBusListener.timesCalled == 3
-        !((NewMessageListEvent)eventBusListener.listOfReceivedEvents.get(0)).messageList()
+        !((NewMessageListEvent) eventBusListener.listOfReceivedEvents.get(0)).messageList()
                 .stream()
                 .filter(msg -> msg instanceof RSSILevelCmd)
                 .collect().isEmpty()

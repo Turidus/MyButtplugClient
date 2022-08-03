@@ -1,7 +1,7 @@
 package de.turidus.buttpluggui;
 
 import de.turidus.buttplugManager.deviceManager.Device;
-import de.turidus.buttplugManager.deviceManager.VibrationMotor;
+import de.turidus.buttplugManager.deviceManager.motors.VibrationMotor;
 import de.turidus.buttplugManager.events.ConnectedEvent;
 import de.turidus.buttplugManager.events.DeviceAddedEvent;
 import de.turidus.buttpluggui.deviceControllers.DeviceController;

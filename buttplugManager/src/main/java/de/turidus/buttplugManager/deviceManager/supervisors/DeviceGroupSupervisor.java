@@ -1,5 +1,7 @@
-package de.turidus.buttplugManager.deviceManager;
+package de.turidus.buttplugManager.deviceManager.supervisors;
 
+import de.turidus.buttplugManager.deviceManager.Device;
+import de.turidus.buttplugManager.deviceManager.motors.Motor;
 import de.turidus.buttplugManager.events.ClockEvent;
 import de.turidus.buttplugManager.events.DeviceAddedEvent;
 import de.turidus.buttplugManager.events.DeviceRemovedEvent;
@@ -150,7 +152,7 @@ public class DeviceGroupSupervisor {
 
         public void applyLeaderValueToFollowers() {
             if(empty) {return;}
-            followerList.forEach(motor -> motor.setNextTarget(leadingMotor.currentStep));
+            followerList.forEach(motor -> motor.setNextTarget(leadingMotor.getCurrentStep()));
         }
 
     }

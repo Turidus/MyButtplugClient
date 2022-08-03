@@ -2,6 +2,7 @@ package de.turidus.buttplugManager.deviceManager
 
 import de.turidus.buttplugClient.devices.DeviceData
 import de.turidus.buttplugManager.EventBusListener
+import de.turidus.buttplugManager.deviceManager.supervisors.DeviceGroupSupervisor
 import org.greenrobot.eventbus.EventBus
 import spock.lang.Shared
 import spock.lang.Specification

@@ -1,6 +1,6 @@
 package de.turidus.buttpluggui.motorControllers;
 
-import de.turidus.buttplugManager.deviceManager.VibrationMotor;
+import de.turidus.buttplugManager.deviceManager.motors.VibrationMotor;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Background;

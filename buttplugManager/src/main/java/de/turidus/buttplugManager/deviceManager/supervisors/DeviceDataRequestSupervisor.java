@@ -1,9 +1,10 @@
-package de.turidus.buttplugManager.deviceManager;
+package de.turidus.buttplugManager.deviceManager.supervisors;
 
 import de.turidus.buttplugClient.messages.AbstractMessage;
 import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.BatteryLevelCmd;
 import de.turidus.buttplugClient.messages.deviceMessages.genericSensorMessage.RSSILevelCmd;
 import de.turidus.buttplugClient.messages.enumerationMessages.RequestDeviceList;
+import de.turidus.buttplugManager.deviceManager.DeviceManager;
 import de.turidus.buttplugManager.events.ClockEvent;
 import de.turidus.buttplugManager.events.ConnectedEvent;
 import de.turidus.buttplugManager.events.NewMessageListEvent;
@@ -22,17 +23,17 @@ import java.util.stream.Collectors;
 @Component
 public class DeviceDataRequestSupervisor {
 
-    private final EventBus eventBus;
-    private final double   requestTimeInMS;
+    private final EventBus      eventBus;
+    private final double        requestTimeInMS;
     private final DeviceManager deviceManager;
     private final AtomicInteger idProvider;
-    private long deltaTInMS;
-    private boolean connected = false;
+    private       long          deltaTInMS;
+    private       boolean       connected = false;
 
     public DeviceDataRequestSupervisor(@Qualifier("managerEventBus") EventBus eventBus,
                                        @Value("${manager.deviceRequestTimeInMS}") double requestTimeInMS,
                                        DeviceManager deviceManager,
-                                       AtomicInteger idProvider){
+                                       AtomicInteger idProvider) {
         this.eventBus = eventBus;
         this.requestTimeInMS = requestTimeInMS;
         this.deviceManager = deviceManager;
@@ -41,8 +42,8 @@ public class DeviceDataRequestSupervisor {
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onClockEvent(ClockEvent clockEvent){
-        if(!connected) return;
+    public void onClockEvent(ClockEvent clockEvent) {
+        if(!connected) {return;}
         deltaTInMS += clockEvent.deltaTInMS();
         if(deltaTInMS >= requestTimeInMS) {
             collectMessagesAndFireEvent();
@@ -59,7 +60,7 @@ public class DeviceDataRequestSupervisor {
     }
 
     @Subscribe
-    public void onConnectedEvent(ConnectedEvent event){
+    public void onConnectedEvent(ConnectedEvent event) {
         connected = true;
     }
 
@@ -74,4 +75,5 @@ public class DeviceDataRequestSupervisor {
                                          .map(device -> new RSSILevelCmd(idProvider.getAndIncrement(), device.deviceIndex))
                                          .collect(Collectors.toList());
     }
+
 }
