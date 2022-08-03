@@ -79,7 +79,7 @@ public class DeviceGroupSupervisor {
         }
     }
 
-    private static class DeviceGroup {
+    public static class DeviceGroup {
 
         final int groupID;
         boolean     empty;
@@ -141,6 +141,11 @@ public class DeviceGroupSupervisor {
             return motorList;
         }
 
+        public void applyLeaderValueToFollowers() {
+            if(empty) {return;}
+            followerList.forEach(motor -> motor.setNextTarget(leadingMotor.getCurrentStep()));
+        }
+
         private List<Motor> searchForUnfitGroupIDs() {
             List<Motor> motorList = new ArrayList<>();
             if(empty) {return motorList;}
@@ -148,11 +153,6 @@ public class DeviceGroupSupervisor {
             if(leadingMotor.groupID != groupID) {motorList.add(leadingMotor);}
             motorList.addAll(followerList.stream().filter(motor -> motor.groupID != groupID).toList());
             return motorList;
-        }
-
-        public void applyLeaderValueToFollowers() {
-            if(empty) {return;}
-            followerList.forEach(motor -> motor.setNextTarget(leadingMotor.getCurrentStep()));
         }
 
     }
